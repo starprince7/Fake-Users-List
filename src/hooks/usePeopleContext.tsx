@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios"
 
 
 type UserAddress = {
@@ -9,20 +10,29 @@ type UserAddress = {
   geo: { lat: string | number; lng: string | number };
 };
 
-type User = {
+export type User = {
   id: number;
   name: string;
   username: string;
   email: string;
   address: UserAddress;
+  phone: string;
+  website: string;
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
+  }
 }
 
-interface List {
+interface AppState {
   people: User[]
+  loading: boolean
+  getPeople: () => Promise<void>
   findPeopleWithName: (text: string) => User[]
 }
 
-const PeopleContext = createContext({} as List);
+const PeopleContext = createContext({} as AppState);
 
 // >>> Hook <<<
 export const usePeopleContext = () => {
@@ -37,16 +47,39 @@ const PeopleProvider = ({ children }: PeopleProviderProps) => {
   const [people, setPeople] = useState<User[]>([]);
   const [loading, setLoading] = useState(false)
 
-  // Search through people List
+  // Search through people state
   const findPeopleWithName = (text: string) => {
     const copy = [...people]
+
     return copy.filter(user => {
-      if (user.name.includes(text)) return user
+      let lowcase_text = text.toLowerCase()
+      let name = user.name.toLowerCase()
+      let username = user.username.toLowerCase()
+      if (name.includes(lowcase_text) || username.includes(lowcase_text)) return user
     })
   }
 
+  async function getPeople() {
+    setLoading(true)
+    const res = await axios.get("https://jsonplaceholder.typicode.com/users")
+    setPeople(res.data)
+    setLoading(false)
+  }
+
+  // >>> Fetch users 
+  useEffect(() => {
+    getPeople()
+  }, [])
+
+  const value = {
+    people,
+    loading,
+    getPeople,
+    findPeopleWithName
+  }
+
   return (
-    <PeopleContext.Provider value={{ people, findPeopleWithName }} >{children}</PeopleContext.Provider>
+    <PeopleContext.Provider value={value} >{children}</PeopleContext.Provider>
   )
 };
 

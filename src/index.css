@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .container {
+        @apply max-w-7xl mx-auto
+    }
+    .container-sm {
+        @apply max-w-3xl mx-auto border
+    }
+    .user-title {
+        @apply border-b-4 border-gray-400 flex justify-between items-center
+    }
+    .user-list {
+        @apply cursor-pointer border-b border-gray-400 flex justify-between items-center hover:bg-gray-100 transition-all ease-in-out duration-500
+    }
+    .btn {
+        @apply w-full outline-none rounded-md p-3 my-6 bg-blue-500 font-bold text-white shadow-sm
+    }
+    .loader {
+        @apply p-10 text-center w-full text-lg text-gray-500 font-semibold
+    }
+}
