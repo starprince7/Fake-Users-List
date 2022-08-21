@@ -59,6 +59,7 @@ const PeopleProvider = ({ children }: PeopleProviderProps) => {
     })
   }
 
+
   async function getPeople() {
     setLoading(true)
     const res = await axios.get("https://jsonplaceholder.typicode.com/users")

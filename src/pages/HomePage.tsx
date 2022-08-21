@@ -1,9 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react'
 import UserItem from '../components/UserItem'
 import { usePeopleContext } from '../hooks/usePeopleContext'
+import { debounceInputSearch } from '../utility/debounce'
 
 function HomePage() {
-  const { people, loading, findPeopleWithName, getPeople } = usePeopleContext()
+  
+  const {
+    people,
+    loading,
+    getPeople,
+    findPeopleWithName } = usePeopleContext()
+  
   const [users, setUsers] = useState([] as typeof people)
   const SearchInput = useRef<HTMLInputElement | null>(null)
 
@@ -13,9 +20,11 @@ function HomePage() {
     }
   }, [loading, people])
 
-  const handleInputSearch = (text: string) => {
+  // const handleInputSearch = 
+
+  const handleInputSearch = debounceInputSearch((text) => {
     setUsers(findPeopleWithName(text))
-  }
+  })
 
 
   return (
